@@ -27,6 +27,8 @@ class App extends Component {
     this.changeFontSize = this.changeFontSize.bind(this);
     this.saveToJson = this.saveToJson.bind(this);
     this.setMeasurement = this.setMeasurement.bind(this);
+    this.zoomer = this.zoomer.bind(this);
+    this.restoreZoom = this.restoreZoom.bind(this);
   }
 
   setCoordinates(event, newX = 10, newY = 10) {
@@ -84,6 +86,28 @@ class App extends Component {
     const json = stage.toJSON();
     console.log(json);
   }
+
+  restoreZoom() {
+    //TODO: I am not sure how it works!
+    this.backgroundLayer.x(0);
+    this.backgroundLayer.y(0);
+    this.backgroundLayer.scale({
+        x : this.state.x,
+        y : 1
+    });
+    this.backgroundLayer.draw();
+  }
+
+  zoomer(e) {
+    //TODO: I am not sure how it works!
+    if (!e.target.getStage().getPointerPosition) return;
+    console.log(e.target.getStage().getPointerPosition);
+    var pos = e.target.getStage().getPointerPosition();
+    console.log(pos);
+    this.backgroundLayer.x( - (pos.x));
+    this.backgroundLayer.y( - (pos.y));
+    this.backgroundLayer.draw();
+}
   componentDidMount() {
     this.setMeasurement();
 
@@ -175,6 +199,8 @@ class App extends Component {
             ref={node => {
               this.backgroundLayer = node;
             }}
+            onMouseOver={this.zoomer}
+            onMouseOut={this.restoreZoom}
           >
             <Image
               // x={10}
