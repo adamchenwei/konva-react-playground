@@ -12,6 +12,15 @@ import {
 import Konva from 'konva';
 
 // function from https://stackoverflow.com/a/15832662/512042
+function downloadURI(uri, name) {
+  var link = window.document.createElement("a");
+  link.download = name;
+  link.href = uri;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  //delete link;
+}
 
 class App extends Component {
   constructor() {
@@ -133,8 +142,17 @@ class App extends Component {
     this.setMeasurement();
 
     const image = new window.Image();
-    //image.src = "http://konvajs.github.io/assets/yoda.jpg";
-    image.src = '/empty-canvas.jpg';
+    image.setAttribute('crossOrigin', 'anonymous');
+
+    //this will fail if we try to do setAttribute crossOrigin, because the service forced no cross origin
+    //but it will show in page if we do not add it, however, the saving of image will FAIL!!!
+    image.src = "http://konvajs.github.io/assets/yoda.jpg";
+
+    //interesting that, a relative partial will fail
+    //image.src = '/empty-canvas.jpg';
+
+    //this will work
+    image.src = 'https://cdn.filestackcontent.com/2VRyfRkCRemINefwVAfs';
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
@@ -166,8 +184,9 @@ class App extends Component {
           <button onClick={this.saveToJson}>saveToJson</button>
           <button onClick={() => this.changeFontSize(32)}>changeFontSize</button>
           <button onClick={() => {
+
             const dataURL = this.stageNode.getStage().toDataURL();
-            this.downloadURI(dataURL, 'stage1.png');
+            downloadURI(dataURL, 'stage1.png');
           }}>Download Image</button>
           <a ref={node => {
               this.downloadLinkNode = node;
