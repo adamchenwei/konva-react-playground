@@ -101,8 +101,8 @@ class App extends Component {
 
   zoomIn() {
     this.backgroundLayer.scale({
-        x : 2,
-        y : 2
+        x : 4,
+        y : 4
     });
     this.backgroundLayer.draw();
   }
