@@ -11,6 +11,8 @@ import {
 } from 'react-konva';
 import Konva from 'konva';
 
+// function from https://stackoverflow.com/a/15832662/512042
+
 class App extends Component {
   constructor() {
     super();
@@ -30,6 +32,13 @@ class App extends Component {
     this.zoomer = this.zoomer.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
     this.restoreZoom = this.restoreZoom.bind(this);
+    this.downloadURI = this.downloadURI.bind(this);
+  }
+
+  downloadURI(uri, name) {
+    this.downloadLinkNode.download = name;
+    this.downloadLinkNode.href = uri;
+    this.downloadLinkNode.click();
   }
 
   setCoordinates(event, newX = 10, newY = 10) {
@@ -108,16 +117,17 @@ class App extends Component {
   }
 
   zoomer(e) {
-    console.log('zoomer running')
+    //console.log('zoomer running')
     //TODO: I am not sure how it works!
     if (!e.target.getStage().getPointerPosition) return;
-    console.log(e.target.getStage().getPointerPosition);
+    //console.log(e.target.getStage().getPointerPosition);
     var pos = e.target.getStage().getPointerPosition();
-    console.log(pos);
+    //console.log(pos);
     this.backgroundLayer.x( - (pos.x));
     this.backgroundLayer.y( - (pos.y));
     this.backgroundLayer.draw();
-}
+  }
+
   componentDidMount() {
     this.setMeasurement();
 
@@ -154,6 +164,13 @@ class App extends Component {
           <button onClick={this.setCoordinates}>setCoordinates (restore)</button>
           <button onClick={this.saveToJson}>saveToJson</button>
           <button onClick={() => this.changeFontSize(32)}>changeFontSize</button>
+          <button onClick={() => {
+            const dataURL = this.stageNode.getStage().toDataURL();
+            this.downloadURI(dataURL, 'stage.png');
+          }}>Download Image</button>
+          <a ref={node => {
+              this.downloadLinkNode = node;
+            }} />
         </div>
         <div style={{
           borderWidth: '1px',
