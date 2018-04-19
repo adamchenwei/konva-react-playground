@@ -36,6 +36,7 @@ class App extends Component {
   }
 
   downloadURI(uri, name) {
+    console.log(uri);
     this.downloadLinkNode.download = name;
     this.downloadLinkNode.href = uri;
     this.downloadLinkNode.click();
@@ -166,7 +167,7 @@ class App extends Component {
           <button onClick={() => this.changeFontSize(32)}>changeFontSize</button>
           <button onClick={() => {
             const dataURL = this.stageNode.getStage().toDataURL();
-            this.downloadURI(dataURL, 'stage.png');
+            this.downloadURI(dataURL, 'stage1.png');
           }}>Download Image</button>
           <a ref={node => {
               this.downloadLinkNode = node;
