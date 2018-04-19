@@ -116,6 +116,14 @@ class App extends Component {
         y : 1
     });
     this.backgroundLayer.draw();
+
+    this.interactiveLayer.x(0);
+    this.interactiveLayer.y(0);
+    this.interactiveLayer.scale({
+        x : 1,
+        y : 1
+    });
+    this.interactiveLayer.draw();
   }
 
   zoomIn() {
@@ -124,6 +132,12 @@ class App extends Component {
         y : 4
     });
     this.backgroundLayer.draw();
+
+    this.interactiveLayer.scale({
+      x : 4,
+      y : 4
+  });
+  this.interactiveLayer.draw();
   }
 
   zoomer(e) {
@@ -136,6 +150,10 @@ class App extends Component {
     this.backgroundLayer.x( - (pos.x));
     this.backgroundLayer.y( - (pos.y));
     this.backgroundLayer.draw();
+
+    this.interactiveLayer.x( - (pos.x));
+    this.interactiveLayer.y( - (pos.y));
+    this.interactiveLayer.draw();
   }
 
   componentDidMount() {
@@ -204,6 +222,7 @@ class App extends Component {
               this.stageNode = node;
             }}
           >
+
           <Layer
             ref={node => {
               this.interactiveLayer = node;
