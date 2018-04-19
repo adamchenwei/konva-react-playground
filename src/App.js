@@ -19,11 +19,14 @@ class App extends Component {
       height: 18,
       x: 10,
       y: 10,
+      fontSize: 16,
     };
     this.savePosition = this.savePosition.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
     this.restorePosition = this.restorePosition.bind(this);
-    this.setWidth = this.setWidth.bind(this);
+    this.changeFontSize = this.changeFontSize.bind(this);
+    this.saveToJson = this.saveToJson.bind(this);
+    this.setMeasurement = this.setMeasurement.bind(this);
   }
 
   setCoordinates(event, newX = 10, newY = 10) {
@@ -37,6 +40,12 @@ class App extends Component {
     });
   }
 
+  changeFontSize(newSize) {
+    this.setState({
+      fontSize: newSize,
+    });
+    setTimeout(() => this.setMeasurement(), 1000);
+  }
   restorePosition() {
     this.setState({
       x: this.state.savedCoordinates.x,
@@ -57,16 +66,26 @@ class App extends Component {
         y: newY,
       },
     });
-    this.setWidth();
+    //NOTE: necessary evil
+    //because width state change wont really be detected until x in state is finished changing!!!!
+    setTimeout(() => this.setMeasurement(), 1000)
   }
-  setWidth() {
+  setMeasurement() {
+    console.log(`new height: ${this.textNode.height()}`);
+    console.log(`new width: ${this.textNode.getWidth()}`);
     this.setState({
       width: this.textNode.getWidth(),
+      height: this.textNode.height(),
     });
   }
 
+  saveToJson() {
+    const stage = this.stageNode.getStage();
+    const json = stage.toJSON();
+    console.log(json);
+  }
   componentDidMount() {
-    this.setWidth();
+    this.setMeasurement();
 
     const image = new window.Image();
     //image.src = "http://konvajs.github.io/assets/yoda.jpg";
@@ -81,6 +100,15 @@ class App extends Component {
   }
 
   render() {
+    const {
+      x,
+      y,
+      savedCoordinates,
+      fontSize,
+      width,
+      height,
+      image,
+    } = this.state;
     return (
       <div style={{
         display: 'flex'
@@ -89,7 +117,9 @@ class App extends Component {
           <h1>Something Here</h1>
           <button onClick={this.savePosition}>SavePosition</button>
           <button onClick={this.restorePosition}>restorePosition</button>
-          <button onClick={this.setCoordinates}>Toggle X</button>
+          <button onClick={this.setCoordinates}>setCoordinates (restore)</button>
+          <button onClick={this.saveToJson}>saveToJson</button>
+          <button onClick={() => this.changeFontSize(32)}>changeFontSize</button>
         </div>
         <div style={{
           borderWidth: '1px',
@@ -112,7 +142,7 @@ class App extends Component {
           >
             <Group
               draggable
-              x={this.state.x} y={this.state.y}
+              x={x} y={y}
               ref={node => {
                 this.groupNode = node;
               }}
@@ -121,15 +151,17 @@ class App extends Component {
                 ref={node => {
                   this.textNode = node;
                 }}
+                fontSize={fontSize}
+                // width={width}
                 //x={10} y={10}
                 //padding={16}
-                text={`x: ${this.state.x} y: ${this.state.y}`}
+                text={`111 1 1 1 1 1x: ${x} y: ${y}`}
                 align={'center'}
               />
               <Rect
                   //x={10} y={10}
                   padding={16}
-                  width={this.state.width} height={this.state.height}
+                  width={width} height={height}
                   stroke={'black'}
                   strokeWidth={4}
                   dashEnabled
@@ -150,7 +182,7 @@ class App extends Component {
               width={700}
               height={700}
               //image={'postcard-demo/card1.png'}
-              image={this.state.image}
+              image={image}
               ref={node => {
                 this.backgroundImageNode = node;
               }}
