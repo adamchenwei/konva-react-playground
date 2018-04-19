@@ -28,6 +28,7 @@ class App extends Component {
     this.saveToJson = this.saveToJson.bind(this);
     this.setMeasurement = this.setMeasurement.bind(this);
     this.zoomer = this.zoomer.bind(this);
+    this.zoomIn = this.zoomIn.bind(this);
     this.restoreZoom = this.restoreZoom.bind(this);
   }
 
@@ -92,13 +93,22 @@ class App extends Component {
     this.backgroundLayer.x(0);
     this.backgroundLayer.y(0);
     this.backgroundLayer.scale({
-        x : this.state.x,
+        x : 1,
         y : 1
     });
     this.backgroundLayer.draw();
   }
 
+  zoomIn() {
+    this.backgroundLayer.scale({
+        x : 2,
+        y : 2
+    });
+    this.backgroundLayer.draw();
+  }
+
   zoomer(e) {
+    console.log('zoomer running')
     //TODO: I am not sure how it works!
     if (!e.target.getStage().getPointerPosition) return;
     console.log(e.target.getStage().getPointerPosition);
@@ -199,8 +209,9 @@ class App extends Component {
             ref={node => {
               this.backgroundLayer = node;
             }}
-            onMouseOver={this.zoomer}
+            onMouseMove={this.zoomer}
             onMouseOut={this.restoreZoom}
+            onMouseEnter={this.zoomIn}
           >
             <Image
               // x={10}
