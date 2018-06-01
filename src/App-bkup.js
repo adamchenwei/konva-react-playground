@@ -24,10 +24,18 @@ function downloadURI(uri, name) {
 class App extends Component {
   constructor() {
     super();
+    this.state = {
+      width: 200,
+      height: 18,
+      x: 10,
+      y: 10,
+      fontSize: 16,
+      storedJson: null,
+    };
     this.savePosition = this.savePosition.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
     this.restorePosition = this.restorePosition.bind(this);
-    //this.changeFontSize = this.changeFontSize.bind(this);
+    this.changeFontSize = this.changeFontSize.bind(this);
     this.saveToJson = this.saveToJson.bind(this);
     this.restoreFormJson = this.restoreFormJson.bind(this);
     this.setMeasurement = this.setMeasurement.bind(this);
@@ -55,6 +63,12 @@ class App extends Component {
     });
   }
 
+  changeFontSize(newSize) {
+    this.setState({
+      fontSize: newSize,
+    });
+    setTimeout(() => this.setMeasurement(), 1000);
+  }
   restorePosition() {
     this.setState({
       x: this.state.savedCoordinates.x,
@@ -178,25 +192,14 @@ class App extends Component {
 
   render() {
     const {
-      // x,
-      // y,
-      // savedCoordinates,
-      // fontSize,
-      // width,
-      // height,
-      image,
-    } = this.state;
-
-    const {
       x,
       y,
       savedCoordinates,
       fontSize,
       width,
       height,
-      // image,
-    } = this.props;
-
+      image,
+    } = this.state;
     return (
       <div style={{
         display: 'flex'
@@ -208,7 +211,7 @@ class App extends Component {
           <button onClick={this.setCoordinates}>setCoordinates (restore)</button>
           <button onClick={this.saveToJson}>saveToJson</button>
           <button onClick={this.restoreFormJson}>restoreFormJson</button>
-          <button onClick={() => this.props.changeFontSize(32)}>changeFontSize</button>
+          <button onClick={() => this.changeFontSize(32)}>changeFontSize</button>
           <button onClick={() => {
 
             const dataURL = this.stageNode.getStage().toDataURL();
@@ -297,4 +300,5 @@ class App extends Component {
     );
   }
 }
+
 export default App;

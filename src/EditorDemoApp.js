@@ -24,12 +24,18 @@ function downloadURI(uri, name) {
 class App extends Component {
   constructor() {
     super();
+    this.state = {
+      width: 200,
+      height: 18,
+      x: 10,
+      y: 10,
+      fontSize: 16,
+    };
     this.savePosition = this.savePosition.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
     this.restorePosition = this.restorePosition.bind(this);
-    //this.changeFontSize = this.changeFontSize.bind(this);
+    this.changeFontSize = this.changeFontSize.bind(this);
     this.saveToJson = this.saveToJson.bind(this);
-    this.restoreFormJson = this.restoreFormJson.bind(this);
     this.setMeasurement = this.setMeasurement.bind(this);
     this.zoomer = this.zoomer.bind(this);
     this.zoomIn = this.zoomIn.bind(this);
@@ -55,6 +61,12 @@ class App extends Component {
     });
   }
 
+  changeFontSize(newSize) {
+    this.setState({
+      fontSize: newSize,
+    });
+    setTimeout(() => this.setMeasurement(), 1000);
+  }
   restorePosition() {
     this.setState({
       x: this.state.savedCoordinates.x,
@@ -92,14 +104,7 @@ class App extends Component {
   saveToJson() {
     const stage = this.stageNode.getStage();
     const json = stage.toJSON();
-    this.setState({
-      storedJson: json,
-    })
     console.log(json);
-  }
-
-  restoreFormJson() {
-    console.log(this.state.storedJson);
   }
 
   restoreZoom() {
@@ -178,25 +183,14 @@ class App extends Component {
 
   render() {
     const {
-      // x,
-      // y,
-      // savedCoordinates,
-      // fontSize,
-      // width,
-      // height,
-      image,
-    } = this.state;
-
-    const {
       x,
       y,
       savedCoordinates,
       fontSize,
       width,
       height,
-      // image,
-    } = this.props;
-
+      image,
+    } = this.state;
     return (
       <div style={{
         display: 'flex'
@@ -207,8 +201,7 @@ class App extends Component {
           <button onClick={this.restorePosition}>restorePosition</button>
           <button onClick={this.setCoordinates}>setCoordinates (restore)</button>
           <button onClick={this.saveToJson}>saveToJson</button>
-          <button onClick={this.restoreFormJson}>restoreFormJson</button>
-          <button onClick={() => this.props.changeFontSize(32)}>changeFontSize</button>
+          <button onClick={() => this.changeFontSize(32)}>changeFontSize</button>
           <button onClick={() => {
 
             const dataURL = this.stageNode.getStage().toDataURL();
@@ -250,7 +243,6 @@ class App extends Component {
                   this.textNode = node;
                 }}
                 fontSize={fontSize}
-                fill="rgb(233,12,12)"
                 // width={width}
                 //x={10} y={10}
                 //padding={16}
@@ -274,10 +266,9 @@ class App extends Component {
             ref={node => {
               this.backgroundLayer = node;
             }}
-            // TODO: disable zoom for now
-            // onMouseMove={this.zoomer}
-            // onMouseOut={this.restoreZoom}
-            // onMouseEnter={this.zoomIn}
+            onMouseMove={this.zoomer}
+            onMouseOut={this.restoreZoom}
+            onMouseEnter={this.zoomIn}
           >
             <Image
               // x={10}
@@ -297,4 +288,5 @@ class App extends Component {
     );
   }
 }
+
 export default App;
